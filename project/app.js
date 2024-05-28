@@ -11,11 +11,12 @@ const errorMiddleware = require('./middleware/errorMiddleware');
 
 const app = express();
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/recipeApp', {
+// MongoDB Atlas connection string with actual password
+const dbUri = 'mongodb+srv://stephenwhitted:Tk1cJCAQw6AL0lTa@mongopractice.nxavmch.mongodb.net/?retryWrites=true&w=majority&appName=MongoPractice';
+
+mongoose.connect(dbUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
 });
 
 app.set('view engine', 'ejs');
