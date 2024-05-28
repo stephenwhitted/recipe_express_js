@@ -11,6 +11,7 @@ const errorMiddleware = require('./middleware/errorMiddleware');
 
 const app = express();
 
+// Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/recipeApp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -36,3 +37,5 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
+
+module.exports = app;
