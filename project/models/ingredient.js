@@ -1,7 +1,17 @@
 const mongoose = require('mongoose');
 
 const ingredientSchema = new mongoose.Schema({
-  name: String
+  name: {
+    type: String,
+    required: true
+  },
+  quantity: {
+    type: String,
+    required: true
+  }
 });
 
-module.exports = mongoose.model('Ingredient', ingredientSchema);
+ingredientSchema.index({ name: 1 });
+
+const Ingredient = mongoose.model('Ingredient', ingredientSchema);
+module.exports = Ingredient;

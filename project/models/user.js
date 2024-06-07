@@ -1,9 +1,24 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  pantry: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient' }]
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  }
 });
 
-module.exports = mongoose.model('User', userSchema);
+userSchema.index({ username: 1 });
+userSchema.index({ email: 1 });
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;

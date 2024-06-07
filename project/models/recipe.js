@@ -1,11 +1,24 @@
 const mongoose = require('mongoose');
 
 const recipeSchema = new mongoose.Schema({
-  title: String,
-  ingredients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient' }],
-  instructions: String,
-  cuisine: String,
-  dietaryRestrictions: [String]
+  title: {
+    type: String,
+    required: true
+  },
+  description: String,
+  ingredients: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ingredient',
+    required: true
+  }],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }
 });
 
-module.exports = mongoose.model('Recipe', recipeSchema);
+recipeSchema.index({ title: 1 });
+
+const Recipe = mongoose.model('Recipe', recipeSchema);
+module.exports = Recipe;
