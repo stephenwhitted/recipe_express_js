@@ -1,10 +1,10 @@
 {
-  "name": "project",
+  "name": "recipe-app",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node project/app.js",
-    "dev": "nodemon project/app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,12 +16,15 @@
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "method-override": "^3.0.0",
-    "mongoose": "^8.4.0"
+    "mongoose": "^8.4.0",
+    "dotenv": "^16.0.0"
   },
   "nodemonConfig": {
-    "watch": ["project"],
+    "watch": ["."],
     "ext": "js,json",
     "ignore": ["node_modules"],
-    "exec": "node project/app.js"
+    "execMap": {
+      "js": "node"
+    }
   }
 }

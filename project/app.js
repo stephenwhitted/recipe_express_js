@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
 });
 
-// routes for recipes, ingredients, and users
+// Middleware to set title for each route group
 app.use('/recipes', (req, res, next) => {
   res.locals.title = 'Recipes';
   next();
