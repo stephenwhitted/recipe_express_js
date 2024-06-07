@@ -1,6 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const Recipe = require('../models/Recipe');
+const Ingredient = require('../models/Ingredient');
+const User = require('../models/User');
+
+// GET new recipe form
+router.get('/new', async (req, res) => {
+  try {
+    const ingredients = await Ingredient.find().sort('name'); // Sorted by name for better UX
+    const users = await User.find().sort('username'); // Sorted by username for better UX
+    res.render('recipes/new', { ingredients, users });
+  } catch (err) {
+    console.error(err); // Log the error to the console
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // GET all recipes
 router.get('/', async (req, res) => {

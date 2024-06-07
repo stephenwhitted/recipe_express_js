@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Add Recipe</title>
-  <link rel="stylesheet" href="/styles.css">
+  <%- include('../partials/head') %>
 </head>
 <body>
-  <%- include('../partials/head') %>
   <%- include('../partials/header') %>
-  <h2>Add New Recipe</h2>
+  <h1>Add New Recipe</h1>
   <form action="/recipes" method="POST">
     <label for="title">Title:</label>
-    <input type="text" id="title" name="title" required>
+    <input type="text" name="title" id="title" required>
+    
+    <label for="description">Description:</label>
+    <textarea name="description" id="description" required></textarea>
 
-    <label for="ingredients">Ingredients (comma separated):</label>
-    <input type="text" id="ingredients" name="ingredients" required>
+    <label for="ingredients">Ingredients:</label>
+    <select name="ingredients" id="ingredients" multiple required>
+      <% ingredients.forEach(ingredient => { %>
+        <option value="<%= ingredient._id %>"><%= ingredient.name %></option>
+      <% }) %>
+    </select>
 
-    <label for="instructions">Instructions:</label>
-    <textarea id="instructions" name="instructions" required></textarea>
-
-    <label for="cuisine">Cuisine:</label>
-    <input type="text" id="cuisine" name="cuisine">
-
-    <label for="dietaryRestrictions">Dietary Restrictions (comma separated):</label>
-    <input type="text" id="dietaryRestrictions" name="dietaryRestrictions">
+    <label for="user">User:</label>
+    <select name="user" id="user" required>
+      <% users.forEach(user => { %>
+        <option value="<%= user._id %>"><%= user.username %></option>
+      <% }) %>
+    </select>
 
     <button type="submit">Add Recipe</button>
   </form>
