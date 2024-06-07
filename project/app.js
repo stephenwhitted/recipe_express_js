@@ -8,15 +8,20 @@ const ingredientRoutes = require('./routes/ingredients');
 const userRoutes = require('./routes/users');
 const customMiddleware = require('./middleware/customMiddleware');
 const errorMiddleware = require('./middleware/errorMiddleware');
+require('dotenv').config();
 
 const app = express();
 
-// MongoDB Atlas connection string with actual password
-const dbUri = 'mongodb+srv://stephenwhitted:Tk1cJCAQw6AL0lTa@mongopractice.nxavmch.mongodb.net/?retryWrites=true&w=majority&appName=MongoPractice';
+// MongoDB Atlas connection string from environment variable
+const dbUri = process.env.MONGO_URI;
 
 mongoose.connect(dbUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('Failed to connect to MongoDB', err);
 });
 
 app.set('view engine', 'ejs');
@@ -35,8 +40,9 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 module.exports = app;
