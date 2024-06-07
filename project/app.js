@@ -30,15 +30,27 @@ app.use(methodOverride('_method'));
 app.use(express.static('public'));
 app.use(customMiddleware.logRequest);
 
-app.use('/recipes', recipeRoutes);
-app.use('/ingredients', ingredientRoutes);
-app.use('/users', userRoutes);
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Home' });
+});
+
+// routes for recipes, ingredients, and users
+app.use('/recipes', (req, res, next) => {
+  res.locals.title = 'Recipes';
+  next();
+}, recipeRoutes);
+
+app.use('/ingredients', (req, res, next) => {
+  res.locals.title = 'Ingredients';
+  next();
+}, ingredientRoutes);
+
+app.use('/users', (req, res, next) => {
+  res.locals.title = 'Users';
+  next();
+}, userRoutes);
 
 app.use(errorMiddleware);
-
-app.get('/', (req, res) => {
-  res.render('index');
-});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
