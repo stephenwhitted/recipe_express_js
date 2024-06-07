@@ -1,74 +1,80 @@
-// routes/recipes.js
 const express = require('express');
 const router = express.Router();
-const Recipe = require('../models/recipe');
+const Recipe = require('../models/Recipe');
 
 // GET all recipes
 router.get('/', async (req, res) => {
   try {
-    const recipes = await Recipe.find().populate('ingredients');
-    res.render('recipes/list', { recipes });
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
+    const recipes = await Recipe.find().populate('ingredients').populate('user');
+    res.json(recipes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
-// GET new recipe form
-router.get('/new', (req, res) => {
-  res.render('recipes/new');
+// GET recipe by ID
+router.get('/:id', getRecipe, (req, res) => {
+  res.json(res.recipe);
 });
 
-// POST create new recipe
+// POST create a new recipe
 router.post('/', async (req, res) => {
+  const recipe = new Recipe({
+    title: req.body.title,
+    description: req.body.description,
+    ingredients: req.body.ingredients,
+    user: req.body.user
+  });
   try {
-    const { title, ingredients, instructions, cuisine, dietaryRestrictions } = req.body;
-    const recipe = new Recipe({ title, ingredients, instructions, cuisine, dietaryRestrictions });
-    await recipe.save();
-    res.redirect('/recipes');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// GET edit recipe form
-router.get('/:id/edit', async (req, res) => {
-  try {
-    const recipe = await Recipe.findById(req.params.id);
-    res.render('recipes/edit', { recipe });
-  } catch (error) {
-    res.status(404).send('Recipe not found');
+    const newRecipe = await recipe.save();
+    res.status(201).json(newRecipe);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
 // PATCH update recipe
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', getRecipe, async (req, res) => {
+  if (req.body.title != null) {
+    res.recipe.title = req.body.title;
+  }
+  if (req.body.description != null) {
+    res.recipe.description = req.body.description;
+  }
+  if (req.body.ingredients != null) {
+    res.recipe.ingredients = req.body.ingredients;
+  }
   try {
-    const { title, ingredients, instructions, cuisine, dietaryRestrictions } = req.body;
-    await Recipe.findByIdAndUpdate(req.params.id, { title, ingredients, instructions, cuisine, dietaryRestrictions });
-    res.redirect('/recipes');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
+    const updatedRecipe = await res.recipe.save();
+    res.json(updatedRecipe);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
 // DELETE recipe
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', getRecipe, async (req, res) => {
   try {
-    await Recipe.findByIdAndDelete(req.params.id);
-    res.redirect('/recipes');
-  } catch (error) {
-    res.status(500).send('Internal Server Error');
+    await res.recipe.remove();
+    res.json({ message: 'Deleted Recipe' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
-// GET recipe details
-router.get('/:id', async (req, res) => {
+// Middleware function to get recipe by ID
+async function getRecipe(req, res, next) {
+  let recipe;
   try {
-    const recipe = await Recipe.findById(req.params.id).populate('ingredients');
-    res.render('recipes/detail', { recipe });
-  } catch (error) {
-    res.status(404).send('Recipe not found');
+    recipe = await Recipe.findById(req.params.id).populate('ingredients').populate('user');
+    if (recipe == null) {
+      return res.status(404).json({ message: 'Cannot find recipe' });
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-});
+  res.recipe = recipe;
+  next();
+}
 
 module.exports = router;
