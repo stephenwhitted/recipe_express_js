@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const recipeSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    index: true  // Index added for efficient querying
   },
   description: String,
   ingredients: [{
@@ -16,9 +17,14 @@ const recipeSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   }
+}, {
+  timestamps: true  // Adds createdAt and updatedAt timestamps
 });
 
-recipeSchema.index({ title: 1 });
+// Validation example: Ensure at least one ingredient
+recipeSchema.path('ingredients').validate((ingredients) => {
+  return ingredients.length > 0;
+}, 'At least one ingredient is required');
 
 const Recipe = mongoose.model('Recipe', recipeSchema);
 module.exports = Recipe;
