@@ -12,11 +12,10 @@ require('dotenv').config();
 
 const app = express();
 
-// MongoDB Atlas connection string from environment variable
+
 const dbUri = process.env.MONGO_URI;
 
 mongoose.connect(dbUri, {
-  useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
   console.log('Connected to MongoDB');
@@ -34,7 +33,7 @@ app.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
 });
 
-// Middleware to set title for each route group
+
 app.use('/recipes', (req, res, next) => {
   res.locals.title = 'Recipes';
   next();
